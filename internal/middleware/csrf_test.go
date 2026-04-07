@@ -95,6 +95,20 @@ func TestCSRF_GetDoesNotValidate(t *testing.T) {
 	}
 }
 
+func TestCSRF_SkipsStaticAssets(t *testing.T) {
+	handler := CSRF(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	req := httptest.NewRequest("GET", "/assets/img/logo.svg", nil)
+	w := httptest.NewRecorder()
+	handler.ServeHTTP(w, req)
+	for _, c := range w.Result().Cookies() {
+		if c.Name == "__xsrf-token" {
+			t.Error("static asset requests should not set __xsrf-token cookie")
+		}
+	}
+}
+
 func TestCSRFTokenFromRequest(t *testing.T) {
 	tests := []struct {
 		name   string

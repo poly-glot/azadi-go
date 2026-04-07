@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
+	"strings"
 )
 
 type csrfContextKey struct{}
@@ -14,6 +15,12 @@ const csrfHeaderName = "X-CSRF-TOKEN"
 
 func CSRF(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Skip CSRF for static assets — prevents token overwrites on parallel requests
+		if strings.HasPrefix(r.URL.Path, "/assets/") || r.URL.Path == "/health" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		// Generate CSRF token if not present
 		cookie, err := r.Cookie(csrfCookieName)
 		if err != nil || cookie.Value == "" {
