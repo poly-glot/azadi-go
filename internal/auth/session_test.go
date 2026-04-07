@@ -50,7 +50,7 @@ func TestSessionStore_Destroy(t *testing.T) {
 
 	data := &SessionData{CustomerID: "CUST-001", CustomerName: "James"}
 	recorder := httptest.NewRecorder()
-	store.Create(recorder, data)
+	_ = store.Create(recorder, data)
 	cookies := recorder.Result().Cookies()
 
 	// Now destroy
@@ -78,12 +78,12 @@ func TestSessionStore_MaxOnePerUser(t *testing.T) {
 
 	// Create first session
 	r1 := httptest.NewRecorder()
-	store.Create(r1, data)
+	_ = store.Create(r1, data)
 	cookie1 := r1.Result().Cookies()[0]
 
 	// Create second session (same customer)
 	r2 := httptest.NewRecorder()
-	store.Create(r2, data)
+	_ = store.Create(r2, data)
 
 	// First session should be invalidated
 	req := httptest.NewRequest("GET", "/", nil)
@@ -105,7 +105,7 @@ func TestSessionStore_CookieName(t *testing.T) {
 	store, _ := NewSessionStore(context.Background(), testKey, false)
 	data := &SessionData{CustomerID: "CUST-001"}
 	recorder := httptest.NewRecorder()
-	store.Create(recorder, data)
+	_ = store.Create(recorder, data)
 
 	cookies := recorder.Result().Cookies()
 	found := false
@@ -199,7 +199,7 @@ func TestSessionID(t *testing.T) {
 	// With valid session returns non-empty
 	data := &SessionData{CustomerID: "CUST-001"}
 	recorder := httptest.NewRecorder()
-	store.Create(recorder, data)
+	_ = store.Create(recorder, data)
 	cookies := recorder.Result().Cookies()
 
 	req2 := httptest.NewRequest("GET", "/", nil)

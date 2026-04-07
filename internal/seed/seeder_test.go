@@ -107,7 +107,7 @@ func TestSeeder_Seed_BadJSON(t *testing.T) {
 
 	tmp := t.TempDir()
 	f := filepath.Join(tmp, "bad.json")
-	os.WriteFile(f, []byte("not json"), 0644)
+	_ = os.WriteFile(f, []byte("not json"), 0644)
 
 	err := seeder.Seed(context.Background(), f)
 	if err == nil {

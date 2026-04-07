@@ -1,5 +1,6 @@
 # Build output
-server
+/server
+/azadi
 frontend/dist/
 target/
 
@@ -53,5 +54,3 @@ e2e/
 *.log
 ref/
 azadi-static-frontend/
-package.json
-package-lock.json

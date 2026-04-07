@@ -35,7 +35,7 @@ func EmulatorClient(t *testing.T, kinds ...string) *datastore.Client {
 
 	t.Cleanup(func() {
 		cleanupKinds(client, kinds)
-		client.Close()
+		_ = client.Close()
 	})
 
 	return client

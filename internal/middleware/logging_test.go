@@ -9,7 +9,7 @@ import (
 func TestLogging(t *testing.T) {
 	handler := Logging(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("ok"))
+		_, _ = w.Write([]byte("ok"))
 	}))
 
 	req := httptest.NewRequest("GET", "/test", nil)
@@ -38,7 +38,7 @@ func TestLogging_CustomStatus(t *testing.T) {
 func TestStatusWriter_DefaultStatus(t *testing.T) {
 	handler := Logging(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		// Don't call WriteHeader - should default to 200
-		w.Write([]byte("ok"))
+		_, _ = w.Write([]byte("ok"))
 	}))
 
 	req := httptest.NewRequest("GET", "/", nil)
