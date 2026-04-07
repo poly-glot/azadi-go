@@ -1,0 +1,79 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Azadi Financial Services</title>
+    <meta name="description" content="Azadi Financial Services customer portal">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="icon" href="/assets/assets/img/logo-azadi.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet" nonce="{{.CSPNonce}}">
+
+    {{if .ViteDevURL}}
+    <script type="module" src="{{.ViteDevURL}}/@vite/client" nonce="{{.CSPNonce}}"></script>
+    <link rel="stylesheet" href="{{.ViteDevURL}}/css/main.css" nonce="{{.CSPNonce}}">
+    {{else}}
+    {{if .ViteAssets}}
+    {{with index .ViteAssets "css/main.css"}}
+    <link rel="stylesheet" href="{{.}}" nonce="{{$.CSPNonce}}">
+    {{end}}
+    {{end}}
+    {{end}}
+</head>
+<body>
+    {{template "header" .}}
+
+    {{if .Customer}}
+    <!-- Toolbar (authenticated) -->
+    <div class="c-toolbar">
+        <div class="o-wrapper">
+            <p class="c-toolbar__greeting">
+                <strong>Hello</strong> {{.CustomerName}}
+            </p>
+        </div>
+    </div>
+
+    <!-- Main content area with sidebar -->
+    <div class="o-band o-band--md">
+        <div class="o-wrapper">
+            <div class="o-layout o-layout--medium o-layout--sidebar">
+                <!-- Desktop sidebar -->
+                <aside class="c-sidebar-nav">
+                    {{template "sidebar-nav" .}}
+                </aside>
+
+                <!-- Page content -->
+                <main>
+                    {{if .Success}}<div class="c-alert c-alert--success" role="alert">{{.Success}}</div>{{end}}
+                    {{if .Error}}<div class="c-alert c-alert--danger" role="alert">{{.Error}}</div>{{end}}
+                    {{template "content" .}}
+                </main>
+            </div>
+        </div>
+    </div>
+    {{else}}
+    <!-- Full-width / unauthenticated content -->
+    {{template "content" .}}
+    {{end}}
+
+    {{template "footer" .}}
+
+    {{if .ViteDevURL}}
+    <script type="module" src="{{.ViteDevURL}}/js/main.js" nonce="{{.CSPNonce}}"></script>
+    {{else}}
+    {{if .ViteAssets}}
+    {{with index .ViteAssets "js/main.js"}}
+    <script type="module" src="{{.}}" nonce="{{$.CSPNonce}}"></script>
+    {{end}}
+    {{end}}
+    {{end}}
+</body>
+</html>
+{{end}}
+{{define "content"}}{{end}}

@@ -1,0 +1,57 @@
+# Build output
+server
+frontend/dist/
+target/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.prof
+coverage.out
+vendor/
+
+# Node / Frontend
+node_modules/
+frontend/node/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Java (reference)
+*.class
+!.mvn/wrapper/maven-wrapper.jar
+
+# Environment / secrets
+local.env
+.env
+
+# Firebase
+.firebase/
+.firebaserc.local
+firebase-debug.log
+firestore-debug.log
+
+# Claude Code
+.claude/worktrees/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+test-results/
+e2e/
+
+# Misc
+*.log
+ref/
+azadi-static-frontend/
+package.json
+package-lock.json

@@ -1,0 +1,65 @@
+{
+  "name": "azadi-go",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "username": "vscode",
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/dhoeric/features/google-cloud-cli:1": {}
+  },
+
+  "forwardPorts": [8080, 3000, 4000, 5173, 8081, 9099],
+  "portsAttributes": {
+    "8080": { "label": "Go Server", "onAutoForward": "notify" },
+    "3000": { "label": "Mock Server", "onAutoForward": "notify" },
+    "4000": { "label": "Firebase UI", "onAutoForward": "notify" },
+    "5173": { "label": "Vite Dev Server", "onAutoForward": "notify" },
+    "8081": { "label": "Firestore", "onAutoForward": "silent" },
+    "9099": { "label": "Auth Emulator", "onAutoForward": "silent" }
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  "containerEnv": {
+    "FIRESTORE_EMULATOR_HOST": "0.0.0.0:8081"
+  },
+
+  "remoteUser": "vscode",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker",
+        "toba.vsfire",
+        "zxh404.vscode-proto3"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[go]": {
+          "editor.defaultFormatter": "golang.go",
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+          }
+        },
+        "go.lintTool": "golangci-lint",
+        "go.lintFlags": ["--fast"]
+      }
+    }
+  }
+}

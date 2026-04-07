@@ -1,0 +1,90 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">Settlement Figure</h1>
+
+<div class="u-margin-bottom-normal">
+    <p class="u-small">
+        Please find below a settlement figure which is the amount we require to pay off your agreement in full.<br>
+        <strong>Note:</strong> We have sent a paper copy of the settlement figure to your home address.
+        You will receive this within five working days.
+    </p>
+</div>
+
+<!-- Agreement selection form (when no settlement calculated yet) -->
+{{if not .Settlement}}
+{{if .Agreements}}
+<div class="c-panel c-panel--content u-margin-bottom-normal">
+    <div class="c-panel__inner">
+        <form method="POST" action="/finance/settlement-figure">
+            <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+            <div class="c-form__field">
+                <label for="agreementId" class="c-form__label">Select Agreement:</label>
+                <select name="agreementId" id="agreementId" class="c-select" required>
+                    {{range .Agreements}}
+                    <option value="{{.ID}}">{{.AgreementNumber}}</option>
+                    {{end}}
+                </select>
+            </div>
+            <div class="c-form__actions">
+                <button type="submit" class="c-button c-button--cta">Get Settlement Figure</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}
+{{end}}
+
+<!-- Settlement hero -->
+{{if .Settlement}}
+<div class="c-panel c-panel--hero u-margin-bottom-normal">
+    <div class="c-panel__inner">
+        <p class="c-panel__amount">{{.Settlement.Amount}}</p>
+        <p>
+            <strong class="u-prominent">Settlement expires on:</strong>
+            <span>{{.Settlement.ValidUntil.Format "02/01/2006"}}</span>
+        </p>
+        <div class="u-button-group u-button-group--center">
+            <a href="/finance/make-a-payment" class="c-button c-button--cta c-button--inverse">Settle Now</a>
+            <a href="/help/ways-to-pay" class="c-button c-button--cta c-button--secondary c-button--inverse">Ways to Pay</a>
+        </div>
+    </div>
+</div>
+
+<div class="u-margin-bottom-normal">
+    <p class="u-note"><strong>Note:</strong> Should you make any payments between now and this settlement date please
+        allow three working days for the payment to be processed before re-visiting this site to obtain
+        an up to date settlement figure.</p>
+</div>
+{{end}}
+
+<!-- Settlement by text -->
+<details class="c-accordion c-accordion--section" open>
+    <summary class="c-accordion__summary">
+        <span class="c-accordion__label">Settlement Figure By Text</span>
+    </summary>
+    <div class="c-accordion__panel c-accordion__panel--shadow">
+        <div class="c-accordion__content">
+            <p class="u-note">
+                To receive a copy of this settlement figure via text message please enter your mobile number.<br>
+                We will not charge you for this service.
+            </p>
+
+            <form action="/finance/settlement-figure" method="post" class="u-margin-top-normal">
+                <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+                <div class="c-form__field c-form__field--none">
+                    <label for="mobile" class="c-form__label u-small">
+                        Mobile Number<span class="u-color-default">*</span>
+                    </label>
+                    <div class="c-input-group">
+                        <input type="tel" name="mobileNumber" id="mobile" class="c-input"
+                               placeholder="Mobile number" required>
+                        <button type="submit" class="c-button">Send</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</details>
+
+{{end}}

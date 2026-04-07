@@ -1,0 +1,28 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">My Documents</h1>
+
+<div class="c-documents">
+    {{if .Documents}}
+    {{range .Documents}}
+    <a href="/documents/{{.ID}}/download" class="c-documents__item">
+        <div class="c-documents__icon">
+            <img src="/assets/assets/img/file-icons/{{fileType .FileName}}.png" alt="{{.FileName}}" width="32" height="32">
+        </div>
+        <div class="c-documents__label">
+            <span>{{.FileName}}</span>
+        </div>
+        <div class="c-documents__indicator">
+            <span>Download</span>
+        </div>
+    </a>
+    {{end}}
+    {{else}}
+    <div class="u-margin-vertical">
+        <p class="u-note">You have no documents available at this time.</p>
+    </div>
+    {{end}}
+</div>
+
+{{end}}

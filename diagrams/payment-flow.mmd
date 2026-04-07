@@ -1,0 +1,29 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'actorBorder': '#000000', 'actorBkg': '#ffffff', 'actorTextColor': '#000000', 'signalColor': '#000000', 'signalTextColor': '#000000', 'noteBkgColor': '#f5f5f5', 'noteBorderColor': '#000000', 'noteTextColor': '#000000', 'activationBkgColor': '#f5f5f5', 'activationBorderColor': '#000000', 'fontFamily': 'Arial', 'fontSize': '14px'}, 'sequence': {'messageLineWidth': 3, 'actorBorderWidth': 3}, 'themeCSS': '.messageLine0, .messageLine1 { stroke-width: 3px !important; } .actor { stroke-width: 2px !important; } .note { stroke-width: 2px !important; } .loopLine { stroke-width: 2px !important; }'}}%%
+
+sequenceDiagram
+    participant B as Browser
+    participant S as Go Server
+    participant St as Stripe
+    participant DS as Firestore
+    participant E as Resend
+
+    Note over B,S: Payment Initiation
+    B->>S: POST /finance/make-a-payment {agreementId, amountPence}
+    S->>St: Create PaymentIntent
+    St-->>S: clientSecret
+    S->>DS: Save PaymentRecord (PENDING)
+    S->>DS: Log AuditEvent
+    S-->>B: {clientSecret}
+
+    Note over B,St: Client-Side Payment
+    B->>St: confirmCardPayment (Stripe Elements)
+    St-->>B: Payment result
+
+    Note over St,S: Webhook Processing
+    St->>S: POST /api/stripe/webhook (payment_intent.succeeded)
+    S->>S: Verify signature
+    S->>DS: Check idempotency (webhookEventId)
+    S->>DS: Update status to COMPLETED
+    S->>DS: Log AuditEvent
+    S->>E: Send confirmation email
+    S-->>St: 200 OK

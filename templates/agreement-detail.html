@@ -1,0 +1,90 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">Agreement {{.Agreement.AgreementNumber}}</h1>
+
+<div class="o-layout o-layout--2col">
+
+    <!-- Account Details -->
+    <div>
+        <details class="c-accordion c-accordion--section" open>
+            <summary class="c-accordion__summary">
+                <span class="c-accordion__label">Account Details</span>
+            </summary>
+            <div class="c-accordion__panel">
+                <div class="c-table">
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Type:</div>
+                        <div class="c-table__column">{{.Agreement.Type}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Current balance:</div>
+                        <div class="c-table__column">{{.Agreement.Balance}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">APR %:</div>
+                        <div class="c-table__column">{{.Agreement.APR}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Original agreement term:</div>
+                        <div class="c-table__column">{{.Agreement.OriginalTermMonths}} months</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Contract Mileage:</div>
+                        <div class="c-table__column">{{.Agreement.ContractMileage}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Excess Price per Mile:</div>
+                        <div class="c-table__column">{{.Agreement.ExcessPricePerMile}}</div>
+                    </div>
+                </div>
+                <div class="c-accordion__content">
+                    <p><strong>Model:</strong> {{.Agreement.VehicleModel}}</p>
+                    <p class="u-margin-bottom-none"><strong>Registration Number:</strong> {{.Agreement.Registration}}</p>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Payment Details -->
+    <div>
+        <details class="c-accordion c-accordion--section" open>
+            <summary class="c-accordion__summary">
+                <span class="c-accordion__label">Payment Details</span>
+            </summary>
+            <div class="c-accordion__panel">
+                <div class="c-table">
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Last payment received:</div>
+                        <div class="c-table__column">{{.Agreement.LastPayment}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Date received:</div>
+                        <div class="c-table__column">{{.Agreement.LastPaymentDate.Format "02/01/2006"}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Amount of next payment:</div>
+                        <div class="c-table__column">{{.Agreement.NextPayment}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Date next payment is due:</div>
+                        <div class="c-table__column">{{.Agreement.NextPaymentDate.Format "02/01/2006"}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Payments remaining:</div>
+                        <div class="c-table__column">{{.Agreement.PaymentsRemaining}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Date of final payment:</div>
+                        <div class="c-table__column">{{.Agreement.FinalPaymentDate.Format "02/01/2006"}}</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </div>
+
+</div>
+
+<a href="/my-account" class="c-button c-button--secondary">Back to My Account</a>
+
+{{end}}

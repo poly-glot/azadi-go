@@ -1,0 +1,134 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">My Contact Details</h1>
+
+<div class="c-alert c-alert--danger">
+    Please note that any changes you make using this facility will be automatically applied
+    to all your Azadi Financial Services accounts but may take up to 24 hours to be reflected.
+</div>
+
+{{if .CustomerData}}
+
+<!-- Address Section -->
+<details class="c-accordion c-accordion--section" open>
+    <summary class="c-accordion__summary">
+        <span class="c-accordion__label">Address</span>
+    </summary>
+    <div class="c-accordion__panel c-accordion__panel--shadow">
+        <form action="/my-contact-details" method="post">
+            <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+            <div class="c-inline-edit" data-inline-edit>
+                <div class="c-inline-edit__display">
+                    <div>
+                        <strong class="c-inline-edit__label">Current Address:</strong>
+                        <span class="c-inline-edit__value">{{.CustomerData.AddressLine1}} {{.CustomerData.Postcode}}</span>
+                    </div>
+                    <button type="button" class="c-inline-edit__button" data-inline-edit-trigger>Edit Address</button>
+                </div>
+                <div class="c-inline-edit__fields">
+                    <div class="c-inline-edit__field-group">
+                        <strong class="c-inline-edit__label">New Address:</strong>
+                        <input type="text" name="houseName" class="c-input" placeholder="Address line 1"
+                               value="{{.CustomerData.AddressLine1}}">
+                        <input type="text" name="postcode" class="c-input c-input--small u-margin-top-tiny" placeholder="Postcode"
+                               value="{{.CustomerData.Postcode}}">
+                    </div>
+                    <div class="c-inline-edit__actions">
+                        <button type="submit" class="c-button c-button--small">Save</button>
+                        <button type="button" class="c-button c-button--secondary c-button--small" data-inline-edit-cancel>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</details>
+
+<!-- Contact Details Section -->
+<details class="c-accordion c-accordion--section" open>
+    <summary class="c-accordion__summary">
+        <span class="c-accordion__label">Contact Details</span>
+    </summary>
+    <div class="c-accordion__panel c-accordion__panel--shadow">
+
+        <!-- Home Phone -->
+        <form action="/my-contact-details" method="post">
+            <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+            <div class="c-inline-edit" data-inline-edit>
+                <div class="c-inline-edit__display">
+                    <div>
+                        <strong class="c-inline-edit__label">Home Phone Number:</strong>
+                        <span class="c-inline-edit__value">{{.CustomerData.Phone}}</span>
+                    </div>
+                    <button type="button" class="c-inline-edit__button" data-inline-edit-trigger>Edit</button>
+                </div>
+                <div class="c-inline-edit__fields">
+                    <div class="c-inline-edit__field-group">
+                        <strong class="c-inline-edit__label">New Phone Number:</strong>
+                        <input type="tel" name="homePhone" class="c-input"
+                               placeholder="{{.CustomerData.Phone}}">
+                    </div>
+                    <div class="c-inline-edit__actions">
+                        <button type="submit" class="c-button c-button--small">Save</button>
+                        <button type="button" class="c-button c-button--secondary c-button--small" data-inline-edit-cancel>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Mobile Phone -->
+        <form action="/my-contact-details" method="post">
+            <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+            <div class="c-inline-edit" data-inline-edit>
+                <div class="c-inline-edit__display">
+                    <div>
+                        <strong class="c-inline-edit__label">Mobile Phone Number:</strong>
+                        <span class="c-inline-edit__value">{{.CustomerData.MobilePhone}}</span>
+                    </div>
+                    <button type="button" class="c-inline-edit__button" data-inline-edit-trigger>Edit</button>
+                </div>
+                <div class="c-inline-edit__fields">
+                    <div class="c-inline-edit__field-group">
+                        <strong class="c-inline-edit__label">New Mobile Number:</strong>
+                        <input type="tel" name="mobilePhone" class="c-input"
+                               placeholder="{{.CustomerData.MobilePhone}}">
+                    </div>
+                    <div class="c-inline-edit__actions">
+                        <button type="submit" class="c-button c-button--small">Save</button>
+                        <button type="button" class="c-button c-button--secondary c-button--small" data-inline-edit-cancel>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Email -->
+        <form action="/my-contact-details" method="post">
+            <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+            <div class="c-inline-edit" data-inline-edit>
+                <div class="c-inline-edit__display">
+                    <div>
+                        <strong class="c-inline-edit__label">Email Address:</strong>
+                        <span class="c-inline-edit__value">{{.CustomerData.Email}}</span>
+                    </div>
+                    <button type="button" class="c-inline-edit__button" data-inline-edit-trigger>Edit</button>
+                </div>
+                <div class="c-inline-edit__fields">
+                    <div class="c-inline-edit__field-group">
+                        <strong class="c-inline-edit__label">New Email Address:</strong>
+                        <input type="email" name="email" class="c-input"
+                               placeholder="{{.CustomerData.Email}}">
+                    </div>
+                    <div class="c-inline-edit__actions">
+                        <button type="submit" class="c-button c-button--small">Save</button>
+                        <button type="button" class="c-button c-button--secondary c-button--small" data-inline-edit-cancel>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</details>
+
+{{end}}
+
+{{end}}

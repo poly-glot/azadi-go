@@ -1,0 +1,14 @@
+{{template "layout" .}}
+{{define "content"}}
+<div class="o-band o-band--fullscreen">
+    <div class="o-wrapper">
+        <div class="c-dialog c-dialog--error c-dialog--shadow">
+            <div class="c-dialog__inner">
+                <h3 class="c-dialog__heading u-margin-bottom-small">{{if .Status}}{{.Status}}{{else}}Error{{end}}</h3>
+                <p>{{if .Message}}{{.Message}}{{else}}Something went wrong. Please try again later.{{end}}</p>
+                <a href="/my-account" class="c-button">Back to My Account</a>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}

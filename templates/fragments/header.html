@@ -1,0 +1,88 @@
+{{define "header"}}
+<header class="c-site-header">
+    <div class="o-wrapper c-site-header__wrapper">
+        <a href="{{if .Customer}}/my-account{{else}}/login{{end}}" class="c-site-header__brand">
+            <img src="/assets/assets/img/logo-azadi.svg" alt="" class="c-site-header__logo">
+            <div class="c-site-header__title">Financial Services</div>
+        </a>
+
+        <div class="c-site-header__nav">
+            {{if .Customer}}
+            <!-- Desktop nav (authenticated) -->
+            <nav class="c-site-header__nav--desktop">
+                <a href="/finance/make-a-payment" class="c-button">Make a Payment</a>
+                <a href="/logout" class="c-button c-button--secondary">Logout</a>
+            </nav>
+
+            <!-- Mobile hamburger (authenticated) -->
+            <button class="c-site-header__burger"
+                    data-mobile-menu-toggle
+                    aria-expanded="false"
+                    aria-controls="mobile-menu"
+                    aria-label="Toggle navigation menu">
+                <span data-label-open aria-hidden="true">&#9776;</span>
+                <span data-label-close aria-hidden="true" hidden>&times;</span>
+            </button>
+            {{end}}
+        </div>
+    </div>
+
+    {{if .Customer}}
+    <!-- Mobile menu (authenticated) -->
+    <div class="c-mobile-menu"
+         id="mobile-menu"
+         data-mobile-menu>
+        <div class="o-wrapper u-padding-vertical">
+            <nav>
+                <div class="c-nav-item">
+                    <a href="/my-account" class="c-nav-link{{if eq .RequestURI "/my-account"}} c-nav-link--active{{end}}">
+                        <span class="c-nav-link__label">My Account</span>
+                    </a>
+                </div>
+
+                <div class="c-nav-item">
+                    <a href="/my-documents" class="c-nav-link{{if eq .RequestURI "/my-documents"}} c-nav-link--active{{end}}">
+                        <span class="c-nav-link__label">My Documents</span>
+                    </a>
+                </div>
+
+                <details class="c-nav-details"{{if hasPrefix .RequestURI "/finance/"}} open{{end}}>
+                    <summary>
+                        <span class="c-nav-link__label">Manage My Finance</span>
+                    </summary>
+                    <div class="c-nav-sub">
+                        <a href="/finance/make-a-payment" class="c-nav-sub__link">Make a Payment</a>
+                        <a href="/finance/change-payment-date" class="c-nav-sub__link">Change Payment Date</a>
+                        <a href="/finance/settlement-figure" class="c-nav-sub__link">Settlement Figure</a>
+                        <a href="/finance/request-a-statement" class="c-nav-sub__link">Request a Statement</a>
+                        <a href="/finance/update-bank-details" class="c-nav-sub__link">Update Bank Details</a>
+                    </div>
+                </details>
+
+                <div class="c-nav-item">
+                    <a href="/my-contact-details" class="c-nav-link{{if eq .RequestURI "/my-contact-details"}} c-nav-link--active{{end}}">
+                        <span class="c-nav-link__label">My Contact Details</span>
+                    </a>
+                </div>
+
+                <details class="c-nav-details"{{if hasPrefix .RequestURI "/help/"}} open{{end}}>
+                    <summary>
+                        <span class="c-nav-link__label">Help</span>
+                    </summary>
+                    <div class="c-nav-sub">
+                        <a href="/help/faqs" class="c-nav-sub__link">FAQs</a>
+                        <a href="/help/ways-to-pay" class="c-nav-sub__link">Ways to Pay</a>
+                        <a href="/help/contact-us" class="c-nav-sub__link">Contact Us</a>
+                    </div>
+                </details>
+            </nav>
+        </div>
+
+        <nav class="c-mobile-menu__shortcuts">
+            <a href="/finance/make-a-payment" class="c-button c-button--block">Make a Payment</a>
+            <a href="/logout" class="c-button c-button--secondary c-button--block">Logout</a>
+        </nav>
+    </div>
+    {{end}}
+</header>
+{{end}}

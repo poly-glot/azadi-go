@@ -1,0 +1,71 @@
+{{define "sidebar-nav"}}
+<nav aria-label="Main navigation">
+
+    <!-- My Account -->
+    <div class="c-nav-item">
+        <a href="/my-account"
+           class="c-nav-link{{if eq .RequestURI "/my-account"}} c-nav-link--active{{end}}">
+            <span class="c-nav-link__label">My Account</span>
+        </a>
+    </div>
+
+    <!-- My Documents -->
+    <div class="c-nav-item">
+        <a href="/my-documents"
+           class="c-nav-link{{if eq .RequestURI "/my-documents"}} c-nav-link--active{{end}}">
+            <span class="c-nav-link__label">My Documents</span>
+        </a>
+    </div>
+
+    <!-- Manage My Finance (expandable) -->
+    <details class="c-nav-details"{{if hasPrefix .RequestURI "/finance/"}} open{{end}}>
+        <summary>
+            <span class="c-nav-link__label">Manage My Finance</span>
+        </summary>
+        <div class="c-nav-sub">
+            <a href="/finance/make-a-payment" class="c-nav-sub__link{{if eq .RequestURI "/finance/make-a-payment"}} c-nav-sub__link--active{{end}}">
+                Make a Payment
+            </a>
+            <a href="/finance/change-payment-date" class="c-nav-sub__link{{if eq .RequestURI "/finance/change-payment-date"}} c-nav-sub__link--active{{end}}">
+                Change Payment Date
+            </a>
+            <a href="/finance/settlement-figure" class="c-nav-sub__link{{if eq .RequestURI "/finance/settlement-figure"}} c-nav-sub__link--active{{end}}">
+                Settlement Figure
+            </a>
+            <a href="/finance/request-a-statement" class="c-nav-sub__link{{if eq .RequestURI "/finance/request-a-statement"}} c-nav-sub__link--active{{end}}">
+                Request a Statement
+            </a>
+            <a href="/finance/update-bank-details" class="c-nav-sub__link{{if eq .RequestURI "/finance/update-bank-details"}} c-nav-sub__link--active{{end}}">
+                Update Bank Details
+            </a>
+        </div>
+    </details>
+
+    <!-- My Contact Details -->
+    <div class="c-nav-item">
+        <a href="/my-contact-details"
+           class="c-nav-link{{if eq .RequestURI "/my-contact-details"}} c-nav-link--active{{end}}">
+            <span class="c-nav-link__label">My Contact Details</span>
+        </a>
+    </div>
+
+    <!-- Help (expandable) -->
+    <details class="c-nav-details"{{if hasPrefix .RequestURI "/help/"}} open{{end}}>
+        <summary>
+            <span class="c-nav-link__label">Help</span>
+        </summary>
+        <div class="c-nav-sub">
+            <a href="/help/faqs" class="c-nav-sub__link{{if eq .RequestURI "/help/faqs"}} c-nav-sub__link--active{{end}}">
+                FAQs
+            </a>
+            <a href="/help/ways-to-pay" class="c-nav-sub__link{{if eq .RequestURI "/help/ways-to-pay"}} c-nav-sub__link--active{{end}}">
+                Ways to Pay
+            </a>
+            <a href="/help/contact-us" class="c-nav-sub__link{{if eq .RequestURI "/help/contact-us"}} c-nav-sub__link--active{{end}}">
+                Contact Us
+            </a>
+        </div>
+    </details>
+
+</nav>
+{{end}}

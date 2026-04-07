@@ -1,0 +1,32 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'actorBorder': '#000000', 'actorBkg': '#ffffff', 'actorTextColor': '#000000', 'signalColor': '#000000', 'signalTextColor': '#000000', 'noteBkgColor': '#f5f5f5', 'noteBorderColor': '#000000', 'noteTextColor': '#000000', 'activationBkgColor': '#f5f5f5', 'activationBorderColor': '#000000', 'fontFamily': 'Arial', 'fontSize': '14px'}, 'sequence': {'messageLineWidth': 3, 'actorBorderWidth': 3}, 'themeCSS': '.messageLine0, .messageLine1 { stroke-width: 3px !important; } .actor { stroke-width: 2px !important; } .note { stroke-width: 2px !important; } .loopLine { stroke-width: 2px !important; }'}}%%
+
+sequenceDiagram
+    participant B as Browser
+    participant S as Go Server
+    participant T as Login Tracker
+    participant DS as Firestore
+
+    B->>S: POST /login (agreement + dob|postcode)
+    S->>T: IsBlocked(agreement)?
+
+    alt Locked out (5+ failures)
+        T-->>S: blocked
+        S-->>B: 302 /login-error
+    else Not blocked
+        T-->>S: ok
+        S->>DS: FindByAgreementNumber
+        DS-->>S: Agreement
+        S->>DS: FindByCustomerID
+        DS-->>S: Customer
+        S->>S: Compare DOB (date only)
+        S->>S: Compare postcode (normalised)
+
+        alt Credentials match
+            S->>T: RecordSuccess
+            S->>S: Create session (AES-256-GCM)
+            S-->>B: 302 /my-account + Set-Cookie __session
+        else Mismatch
+            S->>T: RecordFailure
+            S-->>B: 302 /login-error
+        end
+    end

@@ -1,0 +1,44 @@
+{
+  "firestore": {
+    "database": "azadi-go"
+  },
+  "hosting": {
+    "site": "azadi-go",
+    "public": "frontend/dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": { "serviceId": "azadi-go-api", "region": "europe-west2" }
+      },
+      {
+        "source": "**",
+        "run": { "serviceId": "azadi-go-api", "region": "europe-west2" }
+      }
+    ],
+    "headers": [
+      {
+        "source": "/assets/**",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        ]
+      }
+    ]
+  },
+  "emulators": {
+    "firestore": { "port": 8081, "host": "0.0.0.0" },
+    "auth": { "port": 9099, "host": "0.0.0.0" },
+    "ui": { "enabled": true, "port": 4000, "host": "0.0.0.0" },
+    "singleProjectMode": true
+  }
+}

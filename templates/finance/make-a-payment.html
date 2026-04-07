@@ -1,0 +1,138 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">Make a Payment</h1>
+
+<div class="u-margin-bottom-normal">
+    <p>Please tell us how much you would like to pay and input your card details, then click 'Pay'.</p>
+</div>
+
+<form action="/finance/make-a-payment" method="post" id="payment-form"
+      data-stripe-key="{{.StripePublishableKey}}" class="u-margin-bottom-normal">
+    <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+
+    <!-- Agreement Selection -->
+    {{if .Agreements}}
+    <div class="c-panel c-panel--header">
+        <div class="c-panel__inner">
+            <div class="c-form__field c-form__field--none">
+                <label for="agreementId" class="c-form__label">Agreement</label>
+                <select name="agreementId" id="agreementId" class="c-select" required>
+                    {{range .Agreements}}
+                    <option value="{{.ID}}">{{.AgreementNumber}}</option>
+                    {{end}}
+                </select>
+            </div>
+        </div>
+    </div>
+    {{end}}
+
+    <!-- Payment Amount -->
+    <div class="c-panel c-panel--header">
+        <div class="c-panel__inner">
+            <div class="c-form__field c-form__field--none">
+                <label for="amount" class="c-form__label">Payment Amount</label>
+                <div class="c-input-placeholder">
+                    <div class="c-input-placeholder__icon">&pound;</div>
+                    <input type="text" name="amount" id="amount" class="c-input"
+                           placeholder="500"
+                           inputmode="decimal"
+                           required>
+                </div>
+                <p class="u-note u-margin-top">
+                    <strong>Note:</strong> If you are making a payment over and above your normal monthly amount,
+                    please contact us so that we can discuss Partial or Full Settlement options.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Input (Stripe Elements) -->
+    <div class="c-panel c-panel--content">
+        <div class="c-panel__inner">
+            <div class="c-form__field">
+                <label class="c-form__label">Card Details</label>
+                <div id="card-element" class="c-stripe-card"></div>
+                <div id="card-errors" class="c-field-error" role="alert"></div>
+            </div>
+
+            <div class="c-form__actions">
+                <button type="submit" class="c-button">Pay</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="https://js.stripe.com/v3/" nonce="{{.CSPNonce}}"></script>
+<script nonce="{{.CSPNonce}}">
+var stripe = Stripe('{{.StripePublishableKey}}');
+var elements = stripe.elements();
+var cardElement = elements.create('card', {
+    style: {
+        base: {
+            color: '#282828',
+            fontFamily: "'Poppins', Arial, sans-serif",
+            fontSize: '14px',
+            '::placeholder': { color: '#afb4b7' }
+        },
+        invalid: { color: '#e4042b', iconColor: '#e4042b' }
+    }
+});
+cardElement.mount('#card-element');
+
+cardElement.on('change', function(event) {
+    document.getElementById('card-errors').textContent = event.error ? event.error.message : '';
+});
+
+var form = document.getElementById('payment-form');
+var submitButton = form.querySelector('[type="submit"]');
+
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
+
+    var csrfToken = '{{.CSRFToken}}';
+    var amountPence = Math.round(parseFloat(document.getElementById('amount').value) * 100);
+    if (isNaN(amountPence) || amountPence < 100) {
+        document.getElementById('card-errors').textContent = 'Please enter a valid amount (minimum £1.00).';
+        submitButton.disabled = false;
+        submitButton.textContent = 'Pay';
+        return;
+    }
+
+    try {
+        var resp = await fetch('/finance/make-a-payment', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken},
+            body: JSON.stringify({
+                amountPence: amountPence,
+                agreementId: parseInt(document.getElementById('agreementId').value)
+            })
+        });
+
+        if (!resp.ok) {
+            document.getElementById('card-errors').textContent = 'Payment failed. Please try again.';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Pay';
+            return;
+        }
+
+        var data = await resp.json();
+        var result = await stripe.confirmCardPayment(data.clientSecret, {payment_method: {card: cardElement}});
+        if (result.error) {
+            document.getElementById('card-errors').textContent = result.error.message;
+            submitButton.disabled = false;
+            submitButton.textContent = 'Pay';
+        } else {
+            window.location.href = '/finance/make-a-payment?success=true';
+        }
+    } catch (err) {
+        document.getElementById('card-errors').textContent = 'An unexpected error occurred. Please try again.';
+        submitButton.disabled = false;
+        submitButton.textContent = 'Pay';
+    }
+});
+</script>
+
+{{end}}

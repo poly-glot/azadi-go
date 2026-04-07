@@ -1,0 +1,58 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">Change Payment Date</h1>
+
+<div class="c-alert c-alert--danger">
+    <strong>Note:</strong> Only one payment date change is allowed during the lifetime of your agreement.
+    Changing your payment date may incur additional interest.
+</div>
+
+{{if .AlreadyChanged}}
+<div class="c-alert c-alert--danger" role="alert">
+    You have already used your one-time payment date change for this agreement.
+</div>
+{{else}}
+<form method="POST" action="/finance/change-payment-date" class="u-margin-bottom-normal">
+    <input type="hidden" name="_csrf" value="{{.CSRFToken}}">
+    {{if .Agreements}}
+    <input type="hidden" name="agreementId" value="{{(index .Agreements 0).ID}}">
+    {{end}}
+
+    <div class="c-panel c-panel--header">
+        <div class="c-panel__inner">
+            <strong>Current payment date:</strong>
+            {{if .CurrentPaymentDate}}
+            <span>{{.CurrentPaymentDate}}</span>
+            {{else}}
+            <span>8th</span>
+            {{end}}
+        </div>
+    </div>
+
+    <div class="c-panel c-panel--content">
+        <div class="c-panel__inner">
+            <div class="c-form__field">
+                <label for="newPaymentDate" class="c-form__label">New payment date:</label>
+                <select name="newPaymentDate" id="newPaymentDate" class="c-select c-select--small" required>
+                    {{range seq 1 28}}<option value="{{.}}">{{.}}</option>{{end}}
+                </select>
+            </div>
+
+            <div class="c-form__field">
+                <label class="c-option">
+                    <input type="checkbox" name="confirmChange" class="c-option__input" value="true" required>
+                    <span class="c-option__label">I understand that changing my payment date may incur additional interest and I wish to proceed.</span>
+                </label>
+            </div>
+
+            <div class="u-button-group">
+                <a href="/my-account" class="c-button c-button--cta c-button--secondary">Cancel</a>
+                <button type="submit" class="c-button c-button--cta">Confirm</button>
+            </div>
+        </div>
+    </div>
+</form>
+{{end}}
+
+{{end}}

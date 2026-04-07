@@ -1,0 +1,91 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'fontFamily': 'Arial', 'fontSize': '13px'}, 'themeCSS': '.er.entityBox { stroke-width: 2px !important; } .er.relationshipLine { stroke-width: 2px !important; }'}}%%
+
+erDiagram
+    Customer ||--o{ Agreement : has
+    Customer ||--o| BankDetails : has
+    Customer ||--o{ Document : has
+    Customer ||--o{ AuditEvent : generates
+    Agreement ||--o{ PaymentRecord : has
+    Agreement ||--o{ SettlementFigure : has
+    Agreement ||--o{ StatementRequest : has
+
+    Customer {
+        int64 ID PK
+        string CustomerID UK
+        string FullName
+        string Email
+        time DOB
+        string Postcode
+        string Phone
+        string AddressLine1
+    }
+
+    Agreement {
+        int64 ID PK
+        string AgreementNumber UK
+        string CustomerID FK
+        string Type
+        int64 BalancePence
+        string APR
+        string VehicleModel
+        string Registration
+        int64 NextPaymentPence
+        time NextPaymentDate
+        int PaymentsRemaining
+        bool PaymentDateChanged
+    }
+
+    PaymentRecord {
+        int64 ID PK
+        int64 AgreementID FK
+        string CustomerID FK
+        int64 AmountPence
+        string StripePaymentIntentID UK
+        string Status
+        string WebhookEventID UK
+        time CreatedAt
+    }
+
+    BankDetails {
+        int64 ID PK
+        string CustomerID FK
+        string AccountHolderName
+        string EncryptedAccountNumber
+        string EncryptedSortCode
+        string LastFourAccount
+        string LastTwoSortCode
+    }
+
+    SettlementFigure {
+        int64 ID PK
+        int64 AgreementID FK
+        string CustomerID FK
+        int64 AmountPence
+        time CalculatedAt
+        time ValidUntil
+    }
+
+    StatementRequest {
+        int64 ID PK
+        string CustomerID FK
+        int64 AgreementID FK
+        string Status
+        time RequestedAt
+    }
+
+    Document {
+        int64 ID PK
+        string CustomerID FK
+        string Title
+        string FileName
+        string StoragePath
+    }
+
+    AuditEvent {
+        int64 ID PK
+        string CustomerID FK
+        string EventType
+        string IPAddress
+        string Details
+        string SessionIDHash
+    }

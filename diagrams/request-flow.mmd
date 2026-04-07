@@ -1,0 +1,16 @@
+%%{init: {'theme': 'base', 'look': 'classic', 'flowchart': {'defaultRenderer': 'elk', 'curve': 'linear', 'padding': 20, 'nodeSpacing': 50, 'rankSpacing': 50}, 'elk': {'mergeEdges': false, 'nodePlacementStrategy': 'NETWORK_SIMPLEX'}, 'themeVariables': {'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'primaryBorderColor': '#000000', 'lineColor': '#000000', 'secondaryColor': '#f5f5f5', 'tertiaryColor': '#ffffff', 'fontFamily': 'Arial', 'fontSize': '14px'}, 'themeCSS': '.edgePath .path { stroke-width: 2px !important; } .flowchart-link { stroke-width: 2px !important; }'}}%%
+
+flowchart LR
+    Req(["Request"]) --> Log["Logging"] --> RL["Rate\nLimiter"] --> Sec["Security\nHeaders"] --> CSP["CSP\nNonce"] --> CSRF["CSRF"] --> Auth["Auth\nGuard"] --> Handler --> Service --> Repo["Repository"] --> FS["Firestore"]
+
+    style Req fill:#fff,stroke:#000,stroke-width:2px,color:#000
+    style Log fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000
+    style RL fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000
+    style Sec fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000
+    style CSP fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000
+    style CSRF fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000
+    style Auth fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000
+    style Handler fill:#fff,stroke:#000,stroke-width:3px,color:#000
+    style Service fill:#fff,stroke:#000,stroke-width:3px,color:#000
+    style Repo fill:#fff,stroke:#000,stroke-width:3px,color:#000
+    style FS fill:#f5f5f5,stroke:#000,stroke-width:2px,color:#000

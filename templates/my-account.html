@@ -1,0 +1,102 @@
+{{template "layout" .}}
+{{define "content"}}
+
+<h1 class="u-site-heading">My Account</h1>
+
+{{if .Agreements}}
+{{range .Agreements}}
+
+<div class="u-title u-title--border u-margin-bottom-normal">
+    <p class="u-h5 u-margin-bottom-none">
+        <strong>Agreement number: </strong>
+        <span>{{.AgreementNumber}}</span>
+    </p>
+</div>
+
+<div class="o-layout o-layout--2col">
+
+    <!-- Account Details -->
+    <div>
+        <details class="c-accordion c-accordion--section" open>
+            <summary class="c-accordion__summary">
+                <span class="c-accordion__label">Account Details</span>
+            </summary>
+
+            <div class="c-accordion__panel">
+                <div class="c-table">
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Current balance:</div>
+                        <div class="c-table__column">{{.Balance}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Original agreement term:</div>
+                        <div class="c-table__column">{{.OriginalTermMonths}} months</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">APR %:</div>
+                        <div class="c-table__column">{{.APR}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Contract Mileage:</div>
+                        <div class="c-table__column">{{.ContractMileage}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Excess Price per Mile:</div>
+                        <div class="c-table__column">{{.ExcessPricePerMile}}</div>
+                    </div>
+                </div>
+
+                <div class="c-accordion__content">
+                    <p><strong>Model:</strong> <span>{{.VehicleModel}}</span></p>
+                    <p class="u-margin-bottom-none"><strong>Registration Number:</strong> <span>{{.Registration}}</span></p>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Payment Details -->
+    <div>
+        <details class="c-accordion c-accordion--section" open>
+            <summary class="c-accordion__summary">
+                <span class="c-accordion__label">Payment Details</span>
+            </summary>
+
+            <div class="c-accordion__panel">
+                <div class="c-table">
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Last payment received:</div>
+                        <div class="c-table__column">{{.LastPayment}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Date received:</div>
+                        <div class="c-table__column">{{.LastPaymentDate.Format "02/01/2006"}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Amount of next payment:</div>
+                        <div class="c-table__column">{{.NextPayment}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Date next payment is due:</div>
+                        <div class="c-table__column">{{.NextPaymentDate.Format "02/01/2006"}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Payments remaining:</div>
+                        <div class="c-table__column">{{.PaymentsRemaining}}</div>
+                    </div>
+                    <div class="c-table__row">
+                        <div class="c-table__column c-table__column--label">Date of final payment:</div>
+                        <div class="c-table__column">{{.FinalPaymentDate.Format "02/01/2006"}}</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </div>
+
+</div>
+
+{{end}}
+{{else}}
+<p>No agreements found.</p>
+{{end}}
+
+{{end}}

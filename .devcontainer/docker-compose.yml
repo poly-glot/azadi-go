@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - ${HOME}/.cache/go-build:/home/vscode/.cache/go-build
+      - ${HOME}/go/pkg/mod:/home/vscode/go/pkg/mod
+      - ${HOME}/.npm:/home/vscode/.npm
+      - ${HOME}/.claude:/home/vscode/.claude
+      - /var/run/docker.sock:/var/run/docker.sock
+    # ports:
+    #   - "8080:8080"
+    #   - "3000:3000"
+    #   - "4000:4000"
+    #   - "5173:5173"
+    #   - "8081:8081"
+    #   - "9099:9099"
+    command: sleep infinity
+    user: vscode
