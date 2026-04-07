@@ -131,7 +131,7 @@ jobs:
           mkdir -p frontend/dist
           npx firebase-tools hosting:channel:deploy staging \
             --project ${{ env.GCP_PROJECT_ID }} \
-            --site ${{ env.FIREBASE_SITE_ID }} \
+            --only ${{ env.FIREBASE_SITE_ID }} \
             --expires 7d
 
   # ──────────────────────────────────────────────
