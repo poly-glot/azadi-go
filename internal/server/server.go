@@ -196,6 +196,7 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, dat
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Cache-Control", "no-store")
 	_, _ = buf.WriteTo(w)
 }
 
