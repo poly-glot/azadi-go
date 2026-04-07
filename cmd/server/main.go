@@ -45,7 +45,7 @@ func main() {
 	ctx := context.Background()
 
 	// Create Datastore client
-	dsClient, err := datastore.NewClient(ctx, cfg.GCPProjectID)
+	dsClient, err := datastore.NewClientWithDatabase(ctx, cfg.GCPProjectID, cfg.FirestoreDB)
 	if err != nil {
 		slog.Error("failed to create datastore client", "error", err)
 		os.Exit(1)
