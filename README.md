@@ -257,7 +257,7 @@ In production, secrets come from **GCP Secret Manager** mounted as env vars by C
 
 ### CSRF
 
-`XSRF-TOKEN` cookie (JS-readable) validated via `X-XSRF-TOKEN` header or `_csrf` form field. Stripe webhook exempt (signature verification).
+`__xsrf-token` cookie (JS-readable, `__` prefix ensures Firebase Hosting forwards it to Cloud Run) validated via `X-CSRF-TOKEN` header or `_csrf` form field. Stripe webhook exempt (signature verification).
 
 ### Encryption
 

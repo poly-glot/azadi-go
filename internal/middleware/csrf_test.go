@@ -16,7 +16,7 @@ func TestCSRF_SetsCookie(t *testing.T) {
 	handler.ServeHTTP(w, req)
 	found := false
 	for _, c := range w.Result().Cookies() {
-		if c.Name == "XSRF-TOKEN" {
+		if c.Name == "__xsrf-token" {
 			found = true
 			if c.HttpOnly {
 				t.Error("CSRF cookie should NOT be HttpOnly")
@@ -24,7 +24,7 @@ func TestCSRF_SetsCookie(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Error("XSRF-TOKEN cookie not set")
+		t.Error("__xsrf-token cookie not set")
 	}
 }
 
@@ -34,7 +34,7 @@ func TestCSRF_BlocksPostWithoutToken(t *testing.T) {
 	}))
 	req := httptest.NewRequest("POST", "/my-contact-details", strings.NewReader(""))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.AddCookie(&http.Cookie{Name: "XSRF-TOKEN", Value: "valid-token"})
+	req.AddCookie(&http.Cookie{Name: "__xsrf-token", Value: "valid-token"})
 	w := httptest.NewRecorder()
 	handler.ServeHTTP(w, req)
 	if w.Code != http.StatusForbidden {
@@ -48,7 +48,7 @@ func TestCSRF_AllowsPostWithMatchingToken(t *testing.T) {
 	}))
 	req := httptest.NewRequest("POST", "/my-contact-details", strings.NewReader("_csrf=valid-token"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.AddCookie(&http.Cookie{Name: "XSRF-TOKEN", Value: "valid-token"})
+	req.AddCookie(&http.Cookie{Name: "__xsrf-token", Value: "valid-token"})
 	w := httptest.NewRecorder()
 	handler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
@@ -61,8 +61,8 @@ func TestCSRF_AllowsPostWithHeader(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	req := httptest.NewRequest("POST", "/finance/make-a-payment", nil)
-	req.Header.Set("X-XSRF-TOKEN", "valid-token")
-	req.AddCookie(&http.Cookie{Name: "XSRF-TOKEN", Value: "valid-token"})
+	req.Header.Set("X-CSRF-TOKEN", "valid-token")
+	req.AddCookie(&http.Cookie{Name: "__xsrf-token", Value: "valid-token"})
 	w := httptest.NewRecorder()
 	handler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
@@ -75,7 +75,7 @@ func TestCSRF_SkipsWebhook(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	req := httptest.NewRequest("POST", "/api/stripe/webhook", nil)
-	req.AddCookie(&http.Cookie{Name: "XSRF-TOKEN", Value: "token"})
+	req.AddCookie(&http.Cookie{Name: "__xsrf-token", Value: "token"})
 	w := httptest.NewRecorder()
 	handler.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
@@ -101,7 +101,7 @@ func TestCSRFTokenFromRequest(t *testing.T) {
 		cookie *http.Cookie
 		want   string
 	}{
-		{"with cookie", &http.Cookie{Name: "XSRF-TOKEN", Value: "abc123"}, "abc123"},
+		{"with cookie", &http.Cookie{Name: "__xsrf-token", Value: "abc123"}, "abc123"},
 		{"no cookie", nil, ""},
 	}
 	for _, tt := range tests {

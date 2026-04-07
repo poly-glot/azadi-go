@@ -9,8 +9,8 @@ import (
 
 type csrfContextKey struct{}
 
-const csrfCookieName = "XSRF-TOKEN"
-const csrfHeaderName = "X-XSRF-TOKEN"
+const csrfCookieName = "__xsrf-token"
+const csrfHeaderName = "X-CSRF-TOKEN"
 
 func CSRF(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -104,7 +104,7 @@ form.addEventListener('submit', async function(e) {
     try {
         var resp = await fetch('/finance/make-a-payment', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken},
+            headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken},
             body: JSON.stringify({
                 amountPence: amountPence,
                 agreementId: parseInt(document.getElementById('agreementId').value)

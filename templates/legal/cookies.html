@@ -23,11 +23,11 @@
             <div class="c-table u-margin-bottom-normal">
                 <div class="c-table__row">
                     <div class="c-table__column c-table__column--label"><strong>__session</strong></div>
-                    <div class="c-table__column">Maintains your logged-in session. Expires when you close the browser or after 15 minutes of inactivity.</div>
+                    <div class="c-table__column">Maintains your logged-in session securely between your browser and our application server. Named with the __ prefix as required by Firebase Hosting to ensure it is forwarded to our backend. Encrypted and HttpOnly. Expires when you close the browser or after 15 minutes of inactivity.</div>
                 </div>
                 <div class="c-table__row">
-                    <div class="c-table__column c-table__column--label"><strong>XSRF-TOKEN</strong></div>
-                    <div class="c-table__column">Protects against cross-site request forgery attacks. Expires with the session.</div>
+                    <div class="c-table__column c-table__column--label"><strong>__xsrf-token</strong></div>
+                    <div class="c-table__column">Protects against cross-site request forgery (CSRF) attacks by ensuring form submissions and API requests originate from this site. Expires with the session.</div>
                 </div>
             </div>
 
