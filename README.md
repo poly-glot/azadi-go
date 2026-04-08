@@ -301,25 +301,85 @@ Bank details encrypted at rest with **AES-256-GCM**. Only last 4 digits of accou
 
 ## Design Decisions
 
-### Generic Repository
+### Standard library over frameworks
 
-`repo.Store[T]` handles all Datastore CRUD, eliminating ~350 lines of duplicate code across 8 repositories:
+The portal is a straightforward forms-and-tables interface i.e. view an agreement, make a payment, update an address.
+There is nothing here that warrants a web framework. Go 1.22 introduced method-and-pattern routing in `net/http`, which
+covers every route in this application without a third-party router. 
+
+Templates use `html/template`, logging uses`log/slog`, encryption uses `crypto/aes`, all part of the standard library.
+The entire application has two external dependencies: the Datastore client and the Stripe SDK. Fewer dependencies mean a smaller attack surface, faster builds, and no framework upgrade treadmill. A ~15 MB binary, a
+30-second build, and sub-100-millisecond startup are natural consequences of this approach, not goals that required special effort.
+
+### Server-rendered HTML over a single-page application
+
+There is no drag-and-drop, no real-time collaboration, nothing that demands a client-side framework. Server-rendered
+`html/template` is simpler to secure (no CORS configuration, no bearer tokens, no client-side routing to protect),
+faster to first meaningful paint, and accessible out of the box. The one piece of rich client interaction, which is card
+entry, is handled by Stripe Elements, which injects its own iframe regardless of rendering strategy. Vite handles CSS
+and JavaScript bundling; in development it serves assets with hot-module replacement, in production the build output is
+embedded directly into the binary.
+
+### Firestore in Datastore mode
+
+The data model is hierarchical and read-heavy: a customer owns agreements, each agreement has payments, documents, and a
+settlement figure. Datastore mode suits this well; strong consistency by default, key-based lookups that match the
+access patterns exactly, and zero operational overhead. There is no relational joining, no full-text search, no need for
+a traditional RDBMS. The serverless pricing model (pay per operation, scale to zero) fits a portal that sees modest,
+bursty traffic.
+
+### Generic repository with Go generics
+
+Every entity in the system i.e. agreements, payments, documents, settlements needs the same Datastore operations: get
+by ID, list by ancestor, put, delete. Before generics, each package carried its own repository with near-identical code.
+`repo.Store[T]` collapses all of that into a single type-safe implementation, eliminating roughly 350 lines of
+duplication across eight repositories. A feature package declares its repository in one line:
 
 ```go
 type Repository struct { repo.Store[*model.Agreement] }
 ```
 
-### Accept Interfaces, Return Structs
+The generic constraint (`repo.Entity`) ensures every model embeds the fields Datastore needs, so the compiler catches misuse rather than a runtime panic.
 
-Interfaces defined at the consumer. Shared interfaces (3+ consumers) live in `internal/domain/`.
+### Accept interfaces, return structs
 
-### No Frameworks
+Interfaces are defined where they are consumed, not where they are implemented. If a handler needs to list agreements,
+it declares a small interface with that single method. The concrete repository satisfies the interface without knowing
+it exists. This keeps packages decoupled and makes testing straightforward, a five-line stub satisfies the interface
+without reaching for a mocking library. The few interfaces used by three or more consumers live in `internal/domain/` to
+avoid duplication, but the default is always consumer-side definition.
 
-stdlib `net/http` routing, `html/template`, `log/slog`, `crypto/aes`. Three external deps: Datastore client, Stripe SDK, bluemonday.
+### Context lifecycle and graceful shutdown
 
-### Context Lifecycle
+Every background goroutine i.e. the audit logger, the rate-limit cleanup ticker, the seed loader etc accepts a
+`context.Context` and exits when that context is cancelled. The server's `main` function wires a single root context
+tied to OS signals. When Cloud Run sends `SIGTERM`, the context cancels, in-flight requests drain, goroutines wind down,
+and the process exits cleanly. There are no leaked connections, no orphaned writes, no race between shutdown and a
+half-finished audit entry.
 
-All background goroutines accept `context.Context` and exit on cancellation for clean shutdown.
+### Security posture
+
+**Content Security Policy:** every response carries a CSP header with a per-request nonce for scripts and styles and a
+strict `default-src 'self'`. Only Stripe and, in dev mode, the Vite server are whitelisted.
+
+**CSRF protection:** an `__xsrf-token` cookie (the `__` prefix ensures Firebase Hosting forwards it to Cloud Run) is
+validated via header or form field on every state-changing request. Stripe webhooks are exempt because they carry their
+own signature verification.
+
+**Session management:** AES-256-GCM encrypted cookies with no server-side session store to manage or expire.
+
+**Input handling:** Go's `html/template` package automatically escapes all values rendered in templates, preventing
+script injection without a third-party sanitiser. Email content is escaped explicitly via `html.EscapeString`. Custom
+validators enforce UK postcode and sort-code formats at the boundary.
+
+**Sensitive data:** bank account numbers are AES-256 encrypted at rest. Only the last four digits of the account and
+last two of the sort code are ever stored in plaintext.
+
+**Brute-force protection:** login, payment, and general request traffic each have their own rate-limiting tier, tracked
+per IP and per session. Five failed login attempts trigger a 30-minute lockout.
+
+**Audit trail:** every sensitive operation -- payments, contact changes, bank detail updates -- is logged asynchronously
+to Firestore via a buffered channel, giving a complete audit trail without adding latency to the request path.
 
 ---
 
@@ -352,7 +412,7 @@ firebase deploy --only hosting
 | Build   | 15 min               | 30 sec  |
 | Startup | 2-3 sec              | < 100ms |
 | Memory  | 150MB                | 15MB    |
-| Deps    | 50+                  | 3       |
+| Deps    | 50+                  | 2       |
 | LoC     | ~8,000               | ~4,000  |
 | Tests   | 120                  | 232     |
 
