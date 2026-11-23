@@ -33,7 +33,12 @@
 .c-table__column--label {
   background: #f0f0f0;
   font-weight: 700;
-  width: 240px;
+}
+
+@media (min-width: 48rem) {
+  .c-table__column--label {
+    width: 240px;
+  }
 }
 
 .c-table__column--price {
